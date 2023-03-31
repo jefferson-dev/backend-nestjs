@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  app:
+    build: .
+    container_name: app
+    tty: true
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
+  mongodb:
+    image: bitnami/mongodb:latest
+    container_name: mongodb
+    tty: true
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGODB_ROOT_USER=root
+      - MONGODB_ROOT_PASSWORD=root
+      - MONGODB_USERNAME=app_user
+      - MONGODB_PASSWORD=app_password
+      - MONGODB_DATABASE=development
+      - MONGODB_REPLICA_SET_MODE=primary
+      - MONGODB_REPLICA_SET_KEY=replicasetKeyDevelopment
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
